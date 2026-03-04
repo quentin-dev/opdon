@@ -1,4 +1,4 @@
-import { ICharacterCard } from "../../../../core/entities/cards/ICharacterCard";
+import type { ICharacterCard } from "../../../../core/entities/cards/ICharacterCard";
 
 import { CardAttribute, CardBlock, CardColor, CardRarity, CardType } from "../../../../core/entities/cards/enums";
 

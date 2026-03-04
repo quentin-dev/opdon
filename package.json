@@ -1,13 +1,15 @@
 {
-    "name": "my-app",
+    "name": "opdon",
     "scripts": {
         "dev": "bun run --hot src/index.ts",
+        "start": "NODE_ENV=production bun run src/index.ts",
         "lint": "oxlint",
         "lint:fix": "oxlint --fix",
         "fmt": "oxfmt",
         "fmt:check": "oxfmt --check"
     },
     "dependencies": {
+        "@logtape/logtape": "^2.0.4",
         "hono": "^4.12.3"
     },
     "devDependencies": {

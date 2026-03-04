@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@logtape/logtape':
+        specifier: ^2.0.4
+        version: 2.0.4
       hono:
         specifier: ^4.12.3
         version: 4.12.3
@@ -23,6 +26,9 @@ importers:
         version: 1.51.0
 
 packages:
+
+  '@logtape/logtape@2.0.4':
+    resolution: {integrity: sha512-Z4COeAMdedcBFuFkXaPFvDPOVuHoEom1hwNnPCIkSyojyikuNguplwPoSG+kZthWrS7GiOJo1USQyjWwIFfTKA==}
 
   '@oxfmt/binding-android-arm-eabi@0.36.0':
     resolution: {integrity: sha512-Z4yVHJWx/swHHjtr0dXrBZb6LxS+qNz1qdza222mWwPTUK4L790+5i3LTgjx3KYGBzcYpjaiZBw4vOx94dH7MQ==}
@@ -304,6 +310,8 @@ packages:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
 snapshots:
+
+  '@logtape/logtape@2.0.4': {}
 
   '@oxfmt/binding-android-arm-eabi@0.36.0':
     optional: true

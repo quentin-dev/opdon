@@ -1,5 +1,5 @@
 import { CardAttribute, CardColor, CardBlock, CardType, CardRarity } from "../../../../core/entities/cards/enums";
-import { ILeaderCard } from "../../../../core/entities/cards/ILeaderCard";
+import type { ILeaderCard } from "../../../../core/entities/cards/ILeaderCard";
 
 export class MonkeyDLuffy implements ILeaderCard {
     name = "Monkey.D.Luffy";
