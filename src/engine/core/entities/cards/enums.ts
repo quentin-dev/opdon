@@ -1,6 +1,7 @@
 export enum CardAttribute {
     Ranged = "RANGED",
     Strike = "STRIKE",
+    Slash = "SLASH",
 }
 
 export enum CardColor {

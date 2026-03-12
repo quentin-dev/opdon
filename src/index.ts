@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { configure, jsonLinesFormatter, getLogger, getConsoleSink } from "@logtape/logtape";
 
-import { characters } from "./engine";
+import { characters } from "./engine/game/cards";
 
 const app = new Hono();
 

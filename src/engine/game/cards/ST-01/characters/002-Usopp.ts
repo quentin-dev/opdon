@@ -12,7 +12,7 @@ export class Usopp implements ICharacterCard {
     block = CardBlock.Block1;
     types = [CardType.StrawHatCrew];
     cardNumber = "ST-01-002";
-    effect = "Don x2";
+    effect = null;
     triggerEffect = "Play this card.";
     rarity = CardRarity.Common;
 }

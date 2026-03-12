@@ -1,4 +1,4 @@
-import { Usopp } from "./game/cards/ST-01/characters/002-Usopp";
+import { mandatory } from "../helpers";
 
 export enum Player {
     PlayerOne = 0,
@@ -23,6 +23,7 @@ export enum CardStatus {
 }
 
 export interface CardState {
+    id: string;
     donAttached: number;
     status: CardStatus;
 }
@@ -57,12 +58,8 @@ export interface GameState {
     turnPhase: TurnPhase;
 }
 
-export const characters = {
-    "ST-01-002": new Usopp(),
-};
-
 export class Engine {
-    initializeGame(): GameState {
+    public static initializeGame(): GameState {
         return {
             activePlayer: Player.PlayerOne,
             turnNumber: 0,
@@ -70,7 +67,7 @@ export class Engine {
             players: {
                 [Player.PlayerOne]: {
                     hand: [],
-                    deck: [{ donAttached: 0, status: CardStatus.Active }],
+                    deck: [{ donAttached: 0, status: CardStatus.Active, id: "ST01-011" }],
                     discardPile: [],
                     field: [],
                     leader: { donAttached: 0, status: CardStatus.Active },
@@ -79,7 +76,7 @@ export class Engine {
                 },
                 [Player.PlayerTwo]: {
                     hand: [],
-                    deck: [{ donAttached: 0, status: CardStatus.Active }],
+                    deck: [{ donAttached: 0, status: CardStatus.Active, id: "ST01-011" }],
                     discardPile: [],
                     field: [],
                     leader: { donAttached: 0, status: CardStatus.Active },
@@ -91,28 +88,33 @@ export class Engine {
     }
 
     // TODO: Test all of this
-    stepToNextPhase(gameState: GameState): GameState {
+    public static stepToNextPhase(gameState: GameState): GameState {
         switch (gameState.turnPhase) {
             case TurnPhase.Refresh:
-                return { ...this.refreshCards(gameState, gameState.activePlayer), turnPhase: TurnPhase.Draw };
+                return { ...Engine.refreshCards(gameState, gameState.activePlayer), turnPhase: TurnPhase.Draw };
             case TurnPhase.Draw:
-                return { ...this.applyDrawStep(gameState, gameState.activePlayer), turnPhase: TurnPhase.Don };
+                return { ...Engine.applyDrawStep(gameState, gameState.activePlayer), turnPhase: TurnPhase.Don };
             case TurnPhase.Don:
-                return { ...this.distributeDon(gameState, gameState.activePlayer), turnPhase: TurnPhase.Main };
+                return { ...Engine.distributeDon(gameState, gameState.activePlayer), turnPhase: TurnPhase.Main };
             case TurnPhase.Main:
                 return { ...gameState, turnPhase: TurnPhase.End };
             case TurnPhase.End:
-                return { ...gameState, turnPhase: TurnPhase.Refresh, turnNumber: gameState.turnNumber + 1 };
+                return {
+                    ...gameState,
+                    turnPhase: TurnPhase.Refresh,
+                    turnNumber: gameState.turnNumber + 1,
+                    activePlayer: Engine.inactivePlayer(gameState),
+                };
         }
         return gameState;
     }
 
     // Should return GameState + whether there was an error or not
     // Only used during main phase ?
-    processAction(gameState: GameState, action: ActionType, player: Player): GameState {
+    public static processAction(gameState: GameState, action: ActionType, player: Player): GameState {
         switch (action) {
             case ActionType.DrawCard:
-                return this.drawCard(gameState, player);
+                return Engine.drawCard(gameState, player);
             default:
                 // TODO: Unknown
                 break;
@@ -121,7 +123,7 @@ export class Engine {
         return gameState;
     }
 
-    private refreshCards(gameState: GameState, player: Player): GameState {
+    private static refreshCards(gameState: GameState, player: Player): GameState {
         // Reset all attached dons + reset all rested cards to active
         const playerState = gameState.players[player];
 
@@ -139,7 +141,7 @@ export class Engine {
         return gameState;
     }
 
-    private distributeDon(gameState: GameState, player: Player): GameState {
+    private static distributeDon(gameState: GameState, player: Player): GameState {
         const playerState = gameState.players[player];
 
         if (playerState.donDeck.available === 10) return gameState;
@@ -152,13 +154,37 @@ export class Engine {
         return gameState;
     }
 
-    private applyDrawStep(gameState: GameState, player: Player): GameState {
+    private static applyDrawStep(gameState: GameState, player: Player): GameState {
         if (gameState.turnNumber === 0) return gameState;
 
-        return this.drawCard(gameState, player);
+        return Engine.drawCard(gameState, player);
     }
 
-    private drawCard(gameState: GameState, player: Player): GameState {
+    private static inactivePlayer(gameState: GameState): Player {
+        if (gameState.activePlayer === Player.PlayerOne) {
+            return Player.PlayerTwo;
+        }
+        return Player.PlayerOne;
+    }
+
+    private static playCardFromHand(gameState: GameState, player: Player, cardId: string): GameState {
+        const playerState = gameState.players[player];
+
+        const cardIndex = playerState.hand.findIndex((card) => card.id === cardId);
+
+        if (cardIndex === -1) {
+            throw new Error("Card not found in hand");
+        }
+
+        // TODO: Check card effect, cost, etc
+
+        const [playedCard] = playerState.hand.splice(cardIndex, 1);
+        playerState.field.push(mandatory(playedCard));
+
+        return gameState;
+    }
+
+    private static drawCard(gameState: GameState, player: Player): GameState {
         const playerState = gameState.players[player];
 
         if (playerState.deck.length === 0) {
